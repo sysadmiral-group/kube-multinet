@@ -248,3 +248,44 @@ kube-mn-master0   Ready    control-plane,master   83m   v1.21.3   10.44.1.3     
 kube-mn-n0-0      Ready    <none>                 46m   v1.21.3   192.168.1.5   <none>        CentOS Linux 7 (Core)   3.10.0-1160.31.1.el7.x86_64    docker://20.10.7
 kube-mn-n1-0      Ready    <none>                 31m   v1.21.3   10.44.1.5     <none>        Ubuntu 20.04.2 LTS      5.8.0-1038-gcp                 docker://20.10.7
 ```
+
+## test network
+
+### Create test pods and svc
+```
+kubectl apply -f test/
+```
+```
+kubectl get svc -owide
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE     SELECTOR
+kubernetes       ClusterIP   10.96.0.1        <none>        443/TCP        93m     <none>
+nginx            ClusterIP   10.96.57.239     <none>        80/TCP         3m41s   app=nginx
+nginx-nodeport   NodePort    10.107.147.176   <none>        80:30010/TCP   3m41s   app=nginx
+[kosta@dellxps1 kosta]$ kubectl get pods -owide
+NAME                                READY   STATUS    RESTARTS   AGE     IP           NODE              NOMINATED NODE   READINESS GATES
+nginx-deployment-79d8d59989-7bg94   1/1     Running   0          4m22s   10.244.2.2   kube-mn-n1-0      <none>           <none>
+nginx-deployment-79d8d59989-r8csp   1/1     Running   0          4m22s   10.244.1.2   kube-mn-n0-0      <none>           <none>
+nginx-deployment-79d8d59989-vhg98   1/1     Running   0          4m22s   10.244.2.3   kube-mn-n1-0      <none>           <none>
+test-ds-7vzzd                       1/1     Running   0          2m49s   10.244.2.4   kube-mn-n1-0      <none>           <none>
+test-ds-lvmvp                       1/1     Running   0          2m49s   10.244.1.3   kube-mn-n0-0      <none>           <none>
+test-ds-rxk7w                       1/1     Running   0          2m49s   10.244.0.4   kube-mn-master0   <none>           <none>
+```
+
+### Exec into pod and test connectivity
+```
+kubectl exec -it test-ds-7vzzd bash
+```
+```
+curl 10.244.1.2
+HTTP/1.1 200 OK
+```
+```
+curl -i 10.96.57.239
+HTTP/1.1 200 OK
+Server: nginx/1.19.1
+```
+```
+curl -i nginx
+HTTP/1.1 200 OK
+Server: nginx/1.19.1
+```

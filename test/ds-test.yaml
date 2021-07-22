@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: test-ds
+  labels:
+    app: test-ds
+spec:
+  selector:
+    matchLabels:
+      app: test-ds
+  template:
+    metadata:
+      labels:
+        app: test-ds
+    spec:
+      tolerations:
+      - operator: "Exists"
+        effect: "NoSchedule"    
+      containers:
+      - name: test
+        image: codefresh/cli
+        command:
+        - sleep
+        - 1d
+        resources:
+          requests:
+            cpu: 100m
+      # nodeSelector:
+      #   node-group: app
