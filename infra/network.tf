@@ -33,6 +33,22 @@ module "peering" {
   peer_network  = google_compute_network.net1.self_link
 }
 
+resource "google_compute_firewall" "default_allow_external" {
+  name    = "default-allow-external"
+  network = "default"  
+  project = local.gcp_project  
+  allow {
+    protocol = "icmp"
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22", "6443"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
 resource "google_compute_firewall" "net0_allow_external" {
   name    = "net0-allow-external"
   network = local.net0_name  

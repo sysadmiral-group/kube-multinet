@@ -1,0 +1,24 @@
+# 
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+bootstrapTokens:
+- token: "${KUBEADM_TOKEN}"
+  description: "default kubeadm bootstrap token"
+  ttl: "0"
+localAPIEndpoint:
+  advertiseAddress: 192.168.1.3
+  bindPort: 6443
+---
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+kubernetesVersion: v1.21.3
+clusterName: kube-mn
+controlPlaneEndpoint: kube-mn-master0:6443
+networking:
+  podSubnet: 10.244.0.0/16
+apiServer:
+  certSANs:
+  - 192.168.1.3
+  - 10.44.1.3
+  - 35.192.68.184
+  - kube-mn-master0
