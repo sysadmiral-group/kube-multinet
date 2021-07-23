@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-master
+spec:
+  selector:
+    app: nginx-master
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

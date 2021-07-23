@@ -62,9 +62,9 @@ spec:
             memory: "50Mi"
           limits:
             cpu: "100m"
-            memory: "50Mi"
+            memory: "200Mi"
         securityContext:
-          privileged: false
+          privileged: true
           capabilities:
             add: ["NET_ADMIN", "NET_RAW"]
         env:
